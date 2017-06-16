@@ -1,0 +1,456 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Millionaire</title>
+		<link rel="shortcut icon" href="favicon.ico">
+        <style>
+			@font-face {
+				font-family: t1;
+				src: url( \asset\font\華康隸書體.ttc );
+			}
+			@font-face {
+				font-family: t2;
+				src: url( \asset\font\超世紀隸書中.ttf );
+			}
+            html, body
+			{
+				font-family:"微軟正黑體";
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #mainCanvasZone
+            {
+                z-index: 1;
+                background-color: black;
+                width: 75%;
+                height: 100%;
+                touch-action: none;
+                float: left;
+            }
+
+            #characterCanvasZone
+			{
+				background-color: lightyellow;
+                background-image:url(a.png);
+				background-size:100% 100%;
+                width: 25%;
+                height: 40%;
+                touch-action: none;
+				float: left;
+            }
+
+			#mapCanvasZone
+			{
+				background-color: white;
+                width: 25%;
+                height: 60%;
+                touch-action: none;
+				float: left;
+            }
+
+            #mainCanvasOutput
+            {
+                width: 100%;
+                height: 100%;
+            }
+
+			#mainCanvas
+			{
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+                z-index:2;
+            }
+
+            #characterCanvas
+			{
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+
+			#mapCanvas
+			{
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+
+            #msgOutput
+            {
+                text-align: center;
+                width: 100%;
+                height: 100%;
+                display: none;
+                z-index: 3;
+            }
+
+            #message
+            {
+                text-align: center;
+                width: 50%;
+                color: white;
+                border-color: white;
+                border-style: solid;
+                background-color: black;
+                padding: 10px;
+                margin: 10% auto 0px;
+                z-index: 4;
+                display: none;
+            }
+
+            #OKButton
+            {
+                cursor: pointer;
+                width: 40%;
+                font-size: 25px;
+                color: white;
+                text-align: center;
+                background-color: lightskyblue;
+                padding: 5px;
+                margin: 20px auto;
+                display: none;
+            }
+
+            #YESButton, #NOButton
+            {
+                cursor: pointer;
+                width: 20%;
+                font-size: 25px;
+                color: white;
+                text-align: center;
+                padding: 5px;
+                margin-top: 20px;
+                display: none;
+                float: left;
+            }
+
+            #YESButton
+            {
+                background-color: lawngreen;
+                margin-left: 24%;
+                margin-right: 0px;
+            }
+
+            #NOButton
+            {
+                background-color: red;
+                margin-left: 10%;
+            }
+
+            #diceOutput
+            {
+                width: 100%;
+                height: 100%;
+                display: none;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 3;
+            }
+
+            #firstDice, #secondDice, #thirdDice
+            {
+                float: left;
+                z-index: 4;
+                display: none;
+                margin-left: 30px;
+                margin-top: 30%;
+            }
+
+            #firstDice
+            {
+                margin-left: 30%;
+            }
+            tr,td{padding:0;}
+			.but_OK {
+				background-color: #4CAF50; /* Green */
+				border: none;
+				color: white;
+				padding: 2vh 3vw;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 1vw;
+				border-radius: 15%;
+			}
+			#area #area2 #area3 {
+				width: 100%;
+				height:200px;
+			}
+        </style>
+
+        <script src="include/babylon/hand.minified-1.2.js"></script>
+        <script src="include/babylon/cannon.js"></script>
+        <script src="include/babylon/oimo.js"></script>
+        <script src="include/babylon/babylon.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+		<script src="jquery.min.js" type="text/javascript"></script>
+        <!--
+        <link rel="stylesheet" href="source/load/css/main.min.css">
+        <link rel="stylesheet" href="source/load/dist/css-loader.css">
+        -->
+
+        <script>
+            /*
+            function start()
+            {
+                document.getElementById("loader").style.display = 'none';
+            }
+            */
+        </script>
+    </head>
+
+    <body 	onDRAGSTART="window.event.returnValue=false"
+			onCONTEXTMENU="window.event.returnValue=true"
+			onSelectStart="event.returnValue=false">
+        <!--
+        <div id="loader" class="loader loader-default is-active" data-text="Loading..."></div>
+        -->
+
+        <div id="mainCanvasZone">
+            <div id="msgOutput">
+                <div id="message"></div>
+                <div id="YESButton">YES</div>
+                <div id="NOButton">NO</div>
+                <div id="OKButton">OK</div>
+            </div>
+            <div id="diceOutput">
+                <img id="firstDice"/>
+                <img id="secondDice" />
+                <img id="thirdDice" />
+            </div>
+            <div id="mainCanvasOutput">
+                <canvas id="mainCanvas"></canvas>
+            </div>
+        </div>
+		<div id="characterCanvasZone">
+			<div id="control" style = "padding:0px 15px 0px 25px;"  >
+				<table style="border:0px;" >
+				<tr id="b_player">
+					<!--td><button id = "b_p01" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "..\images\people\01.png" style="width:100%;height:100%;"/></button></td>
+					<td><button id = "b_p02" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "..\images\people\02.png" style="width:100%;height:100%;"/></button></td>
+					<td><button id = "b_p03" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "..\images\people\03.png" style="width:100%;height:100%;"/></button></td>
+					<td><button id = "b_p04" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "..\images\people\04.png" style="width:100%;height:100%;"/></button></td>
+					<td><button id = "b_p05" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "..\images\people\05.png" style="width:100%;height:100%;"/></button></td>
+					<td><button id = "b_p06" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "..\images\people\06.png" style="width:100%;height:100%;"/></button></td-->
+
+					<td>&nbsp;&nbsp;</td>
+					<td><button id ="b_set"  onclick = "show('edit_window');" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "textures\tools\edit.png" style="width:100%;height:100%;"/></button></td>
+					<td><button id ="b_help" onclick = ";"     type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "textures\tools\help.png" style="width:100%;height:100%;"/></button></td>
+				</tr>
+				</table>
+				<div id="show_player1" >
+					<h1 style ="margin:0;font-size:2.2vw;"> <span id ="ui_name">孫小美</span>
+						<img    id ="ui_clockwise" src = "asset\clockwise.png" style="width:25px;height:25px;"/>
+						<button id ="b_dice" onclick="show('dice');" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "textures\tools\dice.png" style="width:100%;height:100%;"/></button>
+						<button id ="b_tool" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "textures\tools\tool.png" style="width:100%;height:100%;"/></button>
+						<button id ="b_card" type="button" style="width:40px;height:40px;padding:0;border:1;"><img src = "textures\tools\card.png" style="width:100%;height:100%;"/></button>
+					</h1>
+					<div id ="ui_money">
+						<p style = "margin:0;font-size:1.6vw;">&nbsp;&nbsp;現金&nbsp;&nbsp;<input id="ui_cash" type="text" readonly="readonly" value = "$123,256,789" style = "width:70%;text-align:right;font-size:2vw;  border:none; background-color :rgba(235, 192, 0, 0.05);"/></p>
+						<p style = "margin:0;font-size:1.6vw;">&nbsp;&nbsp;存款&nbsp;&nbsp;<input id="ui_deposit" type="text" readonly="readonly" value = "$123,256,789" style = "width:70%;text-align:right;font-size:2vw;border:none; background-color :rgba(235, 192, 0, 0.05);"/></p>
+						<p style = "margin:0;font-size:1.6vw;">總資金&nbsp;<input type="text"     id="ui_allmoney" readonly="readonly" value = "$123,256,789" style = "width:70%;text-align:right;font-size:2vw;border:none; background-color :rgba(235, 192, 0, 0.05);"/></p>
+						<p style = "margin:0;font-size:1.6vw;">&nbsp;&nbsp;點卷&nbsp;&nbsp;<input id="ui_points" type="text" readonly="readonly" value = "500" style = "width:70%;text-align:right;font-size:2vw;border:none; background-color :rgba(235, 192, 0, 0.05);"/></p>
+						<p style = "margin:0;font-size:1.6vw;">&nbsp;&nbsp;狀態&nbsp;&nbsp;<span  id="ui_god" style = "font-size:1vw;">土地公(3天)</span>&nbsp;&nbsp;<span id="ui_state"style = "font-size:1vw;">送醫(3天)</span></p>
+					</div>
+					<div id = "unwin" hidden>
+						<img src = "asset\unwin.png" style = "width:58%;"/>
+					</div>
+								<div id="test" style = "padding:30px 15px 0px 30px;" hidden>
+								<!--<canvas id="characterCanvas"></canvas>-->
+								x: <input id="x" type="number" /><br />
+								z: <input id="z" type="number" /><br />
+								i: <input id="i" max=105 value = "1" type="number" style="width : 30px;" /><br />
+								<input id="send" type="button" value="Man"/>
+								<input id="send_h" type="button" value="House"/>
+								<input id="send_test" type="button" value="test"/>
+								<input id="send_addone" type="button" value="ManAuto+1"/>
+								<span id ="output"> </span>
+								<hr>
+								Begin <input id="before" type="number" value=1 style="width : 30px;" ><br>
+								After <input id="after" type="number" value=1 style="width : 30px;" ><br>
+								<input id="rp" type="button" value="Go"/>
+								<span id ="test_text" style="width:100%">test: </span>
+								</div>
+				</div>
+			</div>
+
+		</div>
+
+        <div id="mapCanvasZone">
+            <canvas id="mapCanvas"></canvas>
+        </div>
+
+        <!--
+        <script src="source/load/js/main.min.js"></script>
+        -->
+		<div id="ui_message" style=" display:none;position: fixed;top:0px;left:0px; width:100%;height:100%;background-color:rgba(0,0,0,.5); z-index:20;" >
+			<div style="justify-content: center;display:flex;height:100%;width:100%;" >
+				<div style="float:left;height:220px;width:350px;"><!-- small message box -->
+					<input type="button" id="ui_msg_text" onclick = "show_ui_msg();" style="font-size:20px;padding:0;border:0;background-image:url('asset/frame.jpg');background-size:cover;width:100%;height:100%;" value = "Hello">
+				</div>
+				
+			</div>
+		</div>
+		<div id="question" style="display:none;position: fixed;top:0px;left:0px; width:100%;height:100%;background-color:transparent; z-index:20;" >
+			<div style="float:left;height:100vh;width:5vw;background-color:rgba(0,0,0,.5);"></div><!--left-->
+			<div style="float:left;height:100vh;width:60vw;background-color:transparent;"><!--medium-->
+				<div style="float:left;height:10vh;width:60vw;background-color:rgba(0,0,0,.5);"></div><!--top-->
+				<div style="float:left;height:70vh;width:60vw;background-color:rgba(0,0,0,.5);">
+					<div id = "dice" style="display:none;float:left;height:70vh;width:60vw;">
+						<div style= "margin-top: 25%; margin-left: 25%;float: left;height:10vh;width:10vh;">
+							<div id = "area" style= "display='block';width:100%;height:100%">
+							</div>
+						</div>
+						<div>
+							<div style= "margin-top: 25%; margin-left: 10%;float: left;height:10vh;width:10vh;">
+								<div id = "area2" style="display='block';width:100%;height:100%">
+								</div>
+							</div>
+							<div style= "margin-top: 25%; margin-left: 10%;float: left;height:10vh;width:10vh;">
+								<div id = "area3" style="display='block';width:100%;height:100%">
+								</div>
+							</div>
+							<input type="text" id="result_input" value="1,2,3,4,5,6" hidden />
+							<input id="roll" onclick = "closeall();"style = "display:none;margin-top:5vh; margin-left: 43.4%;float: left"class="but_OK" type="button" value = "OK!" />
+						</div>
+					</div>
+					<div id ="no_dice" style="float:left;height:70vh;width:60vw;background-image:url('textures/t.png');background-size:100% 100%;background-repeat: no-repeat;">
+						<div style="float:left;height:70vh;width:10vw;background-color:transparent;"></div><!-- left-left -->
+
+						<div style="float:left;height:65vh;width:50vw;">
+							<div style="float:left;height:10vh;width:40vw;background-color:transparent;"></div>
+							<div id = "welcome_window" style="padding-left:20%;float:left;height:45vh;width:40vw;" hidden><!-- welcome_window -->
+								<h1 style = "font-size: 2vw;">歡迎來到大富翁的世界</h1>
+								<p style = "font-size: 1vw;">準備好開始大富翁之旅了嗎?</p>
+								<p style = "font-size: 1vw;">在開始遊戲前，先讓我們了解該如何玩</p>
+								<p style = "font-size: 1vw; padding-bottom : 3px;">如同正常的<a href="http://rich.joypark.com.tw" target="_blank">大富翁</a>規則一般，而操作方法如下：</p>
+								<p style = "font-size: 1vw;"> &nbsp;&nbsp;&nbsp; Ctrl + 按住滑鼠左鍵移動  ==> 移動地圖</p>
+								<p style = "font-size: 1vw;"> &nbsp;&nbsp;&nbsp; 滑鼠滾輪可放大地圖</p>
+								<input style="margin-left: 17%;" id="start_game" class="but_OK" type="button" value = "OK!" onclick="closeall();">
+							</div>
+
+
+							<div id = "buyhouse"style="float:left;height:45vh;width:40vw; justify-content: center; flex-direction: column; align-items: center" hidden><!-- popup_window -->
+									<h1 id = "buyhouse_h">買房子</h1>
+									<p id = "buyhouse_text"></p>
+									<input id = "buyhouse_yes" type="button" value = "YES" onclick="closeall();" style = "width: 10vw;">
+									<input id = "buyhouse_no"  type="button" value = "NO" onclick="closeall();" style="width: 10vw;">
+							</div>
+
+							<div id = "edit_window"style="float:left;height:45vh;width:40vw; justify-content: center; flex-direction: column; align-items: center" hidden><!-- popup_window -->
+								<h1>設置</h1>
+								<span>背景音效</span>
+								<input onchange = "change_music_bg_vol(-1);" id="m_bg_bar" type="range" min="0" max="100" step="1"></input>
+								<select name="choose_music_bg" size="1" onChange="change_music_index(this);">
+									<option selected value="1">攜手創奇蹟</option>
+									<option value="2">歡樂好時光</option>
+									<option value="3">黃金嘉年華</option>
+									<option value="4">美夢會成真</option>
+									<option value="5">奇幻妙城市</option>
+									<option value="6">看我的厲害</option>
+									<option value="7">世界逍遙遊</option>
+									<option value="8">大富翁之夜</option>
+								</select>
+								<br>
+
+								<span>音　　效</span><input onchange = "change_music_bg_vol(-1);" id="m_in_bar" type="range" min="0" max="100" step="1"></input><br>
+								<div>
+								<input type="button" value = "確定" onclick="closeall();">
+								<input type="button" value = "取消" onclick="reset_music_bg_vol_and_close_all();">
+								</div>
+							</div>
+
+							<div id = "event_magic"style="float:left;height:45vh;width:40vw; justify-content: center; flex-direction: column; align-items: center" hidden><!-- popup_window -->
+								<h1>Magic&nbsp;&nbsp;&nbsp;
+									<span id = "choose_magic" style="font-size:2vw;">所有女生</span>
+								</h1>
+								<table>
+									<tr>
+										<td><input onclick = "b_magic(1);" style="width:100%;font-size:40px;font-family:微軟正黑體;" type='button'value = "原地向後轉" onclick="closeall();"></td>
+										<td><input onclick = "b_magic(2);" style="width:100%;font-size:40px;font-family:微軟正黑體;" type="button" value = "住院三天" onclick="closeall();"></td>
+									</tr>
+									<tr>
+										<td><input onclick = "b_magic(3);" style="width:100%;font-size:40px;font-family:微軟正黑體;" type="button" value = "坐牢三天" onclick="closeall();"></td>
+										<td><input onclick = "b_magic(4);" style="width:100%;font-size:40px;font-family:微軟正黑體;" type="button" value = "獲得一張卡片" onclick="closeall();"></td>
+									</tr>
+								</table>
+								<img src="asset\magic.png" style = "width:100%" hidden>
+							</div>
+							<div id = "popup_window"style="float:left;height:45vh;width:40vw;" hidden><!-- popup_window -->
+								<h1>這是標題</h1>
+								<input type="button" value = "OK!" onclick="closeall();">
+							</div>
+							<!--div style="float:left;height:10vh;width:35vw;background-color:transparent;"></div-->
+						</div>
+					</div>
+					<div style="float:left;height:20vh;width:60vw;background-color:rgba(0,0,0,.5);"></div><!--down-->
+				</div>
+			</div>
+		<div style="float:right;height:100vh;width:35vw;background-color:rgba(0,0,0,.5);"></div><!--right-->
+		</div>
+
+		<script src="include/render.js"></script>
+		<script src="include/data.js"></script>
+		<script src="include/game.js"></script>
+        <script src="include/main.js"></script>
+		<script src="include/ui.js"></script>
+		<script src="dice.js?11"></script>
+		<script>//Dice
+			function g(id){
+				return document.getElementById(id)
+			}
+
+			function on(dom,event,func){
+				if(dom.addEventListener){
+					dom.addEventListener(event,func,false)
+				}else{
+					dom.attachEvent('on'+event,func)
+				}
+			}
+
+			var myDice = dice(document.getElementById('area'),{
+				onEndAnimationEnd:function(result){
+					Diceresult[1]=result;//console.log('Dice1'+result)
+				}
+			})
+
+			var myDice2 = dice(document.getElementById('area2'),{
+				onEndAnimationEnd:function(result){
+					Diceresult[2]=result;//console.log('Dice2'+result)
+					g("roll").style.display="block";
+				}
+			})
+			var myDice3 = dice(document.getElementById('area3'),{
+				onEndAnimationEnd:function(result){
+					Diceresult[3]=result;//console.log('Dice3'+result)
+				}
+			})
+
+			on(g('roll'),'click',function(){
+				myDice.roll(g('result_input').value.split(','))
+				myDice2.roll(g('result_input').value.split(','))
+				myDice3.roll(g('result_input').value.split(','))
+			});
+			function rollthedice(){
+				myDice.roll(g('result_input').value.split(','));
+				myDice2.roll(g('result_input').value.split(','));
+				myDice3.roll(g('result_input').value.split(','));
+			}
+			//on(g('stop'),'click',function(){
+			//	myDice.stop()
+			//	myDice2.stop()
+			//	myDice3.stop()
+			//})
+
+		</script>
+		<audio id ="m_background" src="music/1.mp3" autoplay="autoplay" loop="loop" type="audio/mpeg">
+		<audio id ="m_dice" src="music/dice.mp3" type="audio/mpeg">
+		<audio id ="m_button" src="music/2.mp3" type="audio/mpeg">
+    </body>
+</html>
