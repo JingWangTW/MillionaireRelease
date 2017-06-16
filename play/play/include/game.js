@@ -323,7 +323,7 @@ function RandomMagic(x){
 	if(tmp==2)tmp=Math.floor(Math.random()*total_magic);
 	magic_index = tmp;
 	x.innerHTML = magic_name[tmp];
-	alert(tmp);
+	//alert(tmp);
 }
 function b_magic(num){
 	var tmp = [];
