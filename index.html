@@ -1,0 +1,166 @@
+﻿<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Millionaire</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script type="text/javascript">
+		function show1(){
+			document.location.href='#Show1';
+		}
+		function show2(){
+			document.location.href='#Show2';
+		}
+		function showppt(){
+			var x= document.getElementById("window_width");
+			var y=parseInt(x.innerHTML);
+			console.log(y);
+			document.location.href='#Showppt';
+			
+			ppt.innerHTML = "<iframe id = 'pptshow'  src='http://slides.com/jingwangtw/millionaire/embed' style='height: 50vh;width:40vw;'  webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
+		}
+		function loadppt(){
+			$(document).ready(function(){
+				$(window).resize(function() {
+						wdth=$(window).width();
+						$("#window_width").text(wdth);  
+					});
+				});
+			var ppt = document.getElementById("ppt");
+			ppt.innerHTML = "<iframe id = 'pptshow'  src='ppt.html' style='width:630px;height:387px;'></iframe>";
+		}
+		var click = 0;
+		function open(number){
+			if(click<5)click++;
+			if(click>=5){
+				click=0;
+				var a = document.getElementById("author1");
+				var str = "";
+				if(number == 1){
+					str="";
+				}
+				a.innerHTML = str;
+			}
+		}
+    </script> 
+    <style type="text/css">
+		.name{
+			cursor: pointer;
+		}
+    	.name:hover{
+			color:lightgreen;
+		}
+		.ppt{
+			transform: scale(0.8);
+			transform-origin:0 0; 
+			-ms-transform: scale(0.8); //ie
+			-ms-transform-origin:0 0;
+			-moz-transform: scale(0.8); //firefox
+			-moz-transform-origin:0 0;
+			-o-transform: scale(0.8); //opera
+			-o-transform-origin: 0 0;
+			-webkit-transform: scale(0.8); //chrome
+			-webkit-transform-origin: 0 0; 
+		}
+    </style>
+	<body onDRAGSTART="window.event.returnValue=false" 
+      onCONTEXTMENU="window.event.returnValue=true" 
+      onSelectStart="event.returnValue=false"
+	  onload = "loadppt()">
+
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+				<header id="header">
+					<div class="content">
+						<div class="inner">
+							<h1 style="">MILLIONAIRE</h1>
+							<span id="description" style = "font-size:17px;	line-height: 50%;font-family: 微軟正黑體;">
+								<span class = "name" onclick ="show1()" >王靖</span>
+								&nbsp;&nbsp;
+								<span class = "name" onclick ="show2()" >邱瀚毅</span> 
+							</span>
+						</div> 
+					</div>	
+					<a href = "play/index.html"  style="text-decoration:none;" ><input type="button" value = "Play" style="width:200px;height:70px;font-size:30px;"></a>					
+					<a onclick = "showppt()" style="cursor: pointer;text-decoration:none;width:95px;text-align:center;line-height: 80%;" >Report</a>	
+				</header>
+				
+				
+				<!-- Show -->
+				<div id="main">
+					<article id="Show1">
+						<h2 class="major">Author</h2>
+						<iframe src="author/02/index.html" style="float: left;padding-right:10px;width:270px;height:260px;"></iframe>
+						<br>
+						<span style="font-weight:bold;font-size:26px;line-height: 50%;font-family:微軟正黑體;">王靖 (Tony)</span>
+						<br>
+						<span style="font-size:15px;line-height: 50%;font-family:細明體;">
+							&nbsp;&nbsp;&nbsp;&nbsp;國立臺灣海洋大學
+							資訊工程學系
+							<span style="font-family:Arial">
+								2A
+							</span>
+							<br>
+							&nbsp;&nbsp;&nbsp;
+							<span style="font-family:Arial">
+								00457008
+							</span>
+							<br>
+							&nbsp;&nbsp;&nbsp;
+							<span style="font-family:Arial">
+								FB : <a href = "https://www.facebook.com/tjing.wang/">王靖</a>
+							</span>
+						</span>
+					</article>
+					
+					<article id="Show2">
+						<h2 class="major">Author</h2>
+						<iframe src="author/01/index.html" style="float: left;padding-right:10px;width:270px;height:260px;"></iframe>
+						<br>
+						<span style="font-weight:bold;font-size:26px;line-height: 50%;font-family:微軟正黑體;">邱瀚毅 (Sun)</span>
+						<br>
+						<span style="font-size:15px;line-height: 50%;font-family:細明體;">
+							&nbsp;&nbsp;&nbsp;&nbsp;國立臺灣海洋大學
+							資訊工程學系
+							<span style="font-family:Arial">
+								2A
+							</span>
+							<br>
+							&nbsp;&nbsp;&nbsp;
+							<span style="font-family:Arial">
+								00452138
+							</span>
+							<br>
+							&nbsp;&nbsp;&nbsp;
+							<span style="font-family:Arial">
+								FB : <a href = "https://www.facebook.com/TheBiggestsun/">SunTheBiggest</a>
+							</span>
+						</span>
+					</article>
+					<article id="Showppt" onresize = "showppt()">
+						<h2 class="major">Report</h2>
+						<p id="window_width" name="window_width" hidden>1080</p>
+						<div id="ppt"></div>
+					</article>
+				</div>
+				<br>
+			</div>
+
+			<!-- BG -->
+			<div id="bg"></div>
+	</body>
+</htmli>^M
+
+
+

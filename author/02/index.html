@@ -1,0 +1,224 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+		body{
+			font-family:"微軟正黑體";
+		}
+		tr, td{
+				padding: 0px;
+			}
+		img {
+				width: 58px;
+				height:58px;
+			}
+		button{
+				padding: 0px;
+				border : 0px;
+			}
+		.bigsun{
+				width: 240px;
+				height:240px;
+		}
+		.button {
+				font-family:"微軟正黑體";
+				background-color: #4CAF50; /* 4169E1 */
+				border: none;
+				color: white;
+				padding: 10px 25px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 20px;
+				border-radius: 60%;
+				}
+		.edit_button_close {
+				font-family:"微軟正黑體";
+				background-color: #808080; 
+				border: none;
+				color: white;
+				padding: 5px 15px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 20px;
+				}
+		.edit_button_open {
+				font-family:"微軟正黑體";
+				background-color: #4169E1; 
+				border: none;
+				color: white;
+				padding: 5px 15px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 20px;
+				}
+	</style>
+	<script>
+		var Image = ["00.png","01.png","02.png","03.png","10.png","11.png","12.png","13.png","20.png","21.png","22.png","23.png","30.png","31.png","32.png","33.png"];
+		var sun_random = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+		var game_start=false, get_ans=false, EDIT_bar=false, EDIT_close=true;
+		var win=0, input_sun=0;
+		var countans = 0;
+		function start(){
+			game();
+			getans();
+			document.onkeydown = function(){
+				var keycode = event.which || event.keyCode;
+				console.log(keycode);//37~40
+				if(game_start)
+				{
+					var black=0;
+					for(var i=0;i<=15;i++)
+						if(sun_random[i]==15){black=i;break;}
+					if(black%4!=3&&keycode == 37){//左
+						change(black+1);
+						//alert("左");
+					}
+					if(black<12&&keycode == 38){//上
+						change(black+4);
+						//alert("上");
+					}
+					if(black%4!=0&&keycode == 39){//右
+						change(black-1);
+						//alert("右");
+					}
+					if(black>3&&keycode == 40){//下
+						change(black-4);
+						console.log(black);
+						//alert("下");
+					}
+				}
+				if(keycode == 84)
+				{
+					input_sun=1;
+				}
+				if(keycode == 79 && input_sun == 1)
+				{
+					input_sun=2;
+				}
+				if(keycode == 78 && input_sun == 2)
+				{
+					input_sun=3;
+				}
+				if(keycode == 89 && input_sun == 3)
+				{
+					input_sun=4;
+					oneans();
+					input_sun=0;
+					get_ans=false;
+				}
+			}
+		}
+		function sortNumber(a,b) {return a - b;}
+		function unsort(){
+		
+		}
+		function game(){
+			game_start = true;
+			sun_random.sort( function(){return Math.random()>0.5 ? -1 : 1;} );
+			print();
+		}
+		function change(index)
+		{
+			if(!game_start)return ;
+			console.log("HI"+index);
+			var tmp;
+			if(index>3&& sun_random[index-4]==15)
+			{
+				console.log("change: " + sun_random[index-4] + "to" + sun_random[index]);
+				tmp = sun_random[index-4];
+				sun_random[index-4] = sun_random[index];
+				sun_random[index] = tmp;
+			}
+			else if(index<12&& sun_random[index+4]==15)
+			{
+				tmp = sun_random[index+4];
+				sun_random[index+4] = sun_random[index];
+				sun_random[index] = tmp;
+			}
+			else if(index%4!=0&&sun_random[index-1]==15)
+			{
+				tmp = sun_random[index-1];
+				sun_random[index-1] = sun_random[index];
+				sun_random[index] = tmp;
+			}
+			else if(index%4!=3&&sun_random[index+1]==15)
+			{
+				tmp = sun_random[index+1];
+				sun_random[index+1] = sun_random[index];
+				sun_random[index] = tmp;
+			}
+			else return ;
+			print();
+			if(check())
+			{
+				game();
+				getans();
+			}
+		}
+		function print(){
+			var sun = document.getElementById("sun");
+			var str="";
+			str = "<table>";
+			str +="<tbody>";
+			for(var i=0;i<4;i++)
+			{
+				str += "<tr>";
+				for(var j=0;j<4;j++)
+				{
+					str += "<td >";
+					str += "<button type='button' onclick='change("+(i*4+j)+")' id = " + "'img"+ (i*4+j) +"'" + ">";
+					str += "<img src='" + Image[ sun_random[i*4+j]] + "'";
+					str += "</button>";
+					str += "</td>";
+				}
+				str += "</tr>";
+			}
+			str += "</tbody></table>"
+			sun.innerHTML=str;
+		}
+		function check(){
+			for(var i=1;i<16;i++)
+			{
+				if(sun_random[i]<sun_random[i-1])
+				{
+					return false;
+				}
+			}
+			win++;
+			return true;
+		}
+		function getans(ans_click){
+			var sun = document.getElementById("sun");
+			if(!get_ans){
+				sun.innerHTML="<img class = 'bigsun' onclick = 'getans()' src='tony.jpg'>";
+				get_ans=!get_ans;
+			}
+			else if(countans>5){
+				countans=0;
+				print();
+				get_ans=!get_ans;
+			}
+			else countans++;
+		}
+		function oneans()
+		{
+			var sun = document.getElementById("sun");
+			if(input_sun==4)
+			{
+				game_start = true;
+				sun_random.sort(sortNumber);
+				print();
+			}
+		}
+		window.addEventListener("load",start,false);
+	</script>
+</head>
+<body onDRAGSTART="window.event.returnValue=false" 
+      onCONTEXTMENU="window.event.returnValue=true" 
+      onSelectStart="event.returnValue=false">
+	<div id="sun"><table><tbody><tr><td><button type="button" onclick="change(0)" id="img0"><img src="00.png" <="" button=""></button></td><td><button type="button" onclick="change(1)" id="img1"><img src="01.png" <="" button=""></button></td><td><button type="button" onclick="change(2)" id="img2"><img src="02.png" <="" button=""></button></td><td><button type="button" onclick="change(3)" id="img3"><img src="03.png" <="" button=""></button></td></tr><tr><td><button type="button" onclick="change(4)" id="img4"><img src="10.png" <="" button=""></button></td><td><button type="button" onclick="change(5)" id="img5"><img src="11.png" <="" button=""></button></td><td><button type="button" onclick="change(6)" id="img6"><img src="12.png" <="" button=""></button></td><td><button type="button" onclick="change(7)" id="img7"><img src="13.png" <="" button=""></button></td></tr><tr><td><button type="button" onclick="change(8)" id="img8"><img src="20.png" <="" button=""></button></td><td><button type="button" onclick="change(9)" id="img9"><img src="21.png" <="" button=""></button></td><td><button type="button" onclick="change(10)" id="img10"><img src="22.png" <="" button=""></button></td><td><button type="button" onclick="change(11)" id="img11"><img src="23.png" <="" button=""></button></td></tr><tr><td><button type="button" onclick="change(12)" id="img12"><img src="30.png" <="" button=""></button></td><td><button type="button" onclick="change(13)" id="img13"><img src="31.png" <="" button=""></button></td><td><button type="button" onclick="change(14)" id="img14"><img src="32.png" <="" button=""></button></td><td><button type="button" onclick="change(15)" id="img15"><img src="33.png" <="" button=""></button></td></tr></tbody></table></div>
+</body>
+</html>
