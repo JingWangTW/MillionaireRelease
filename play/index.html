@@ -1,0 +1,167 @@
+﻿<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Millionaire</title>
+		
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<style>
+			body	{font-family:微軟正黑體;}
+			.people {
+						width:120px;
+						height:120px;
+					}
+			.p_but  {
+						padding:0px;
+						height:120px;
+						width:120px;
+					}
+			.p_but:hover {background-color: rgba(255, 255, 255, 0.175)}
+		</style>
+		<script>
+			//background-color: rgba(255, 255, 255, 0.075);
+			var pclick = [false,false,false,false,false,false,false];
+			var pclicknum = 0;
+			function p_click(number)
+			{
+				var maxpeople= document.getElementById("maxpeople");
+				console.log();
+				var num = parseInt(number);
+				pclick[num] = !pclick[num];
+				if(pclick[num]){
+					if(pclicknum<maxpeople.value){
+						var tmp = document.getElementById("p"+number);
+						tmp.style="background-color: rgba(255, 255, 255, 0.075);";
+						//tmp.setAttribute = ("style","background-color: rgba(255, 255, 255, 0.375);");
+						pclicknum++;
+					}
+					else pclick[num] = !pclick[num];
+				}
+				else
+				{
+					var tmp = document.getElementById("p"+number);
+					tmp.style="box-shadow:none";
+					//tmp.setAttribute = ("style","");
+					pclicknum--;
+				}
+			}
+			function clearpeople(){
+				for(var i=1;i<=6;i++){
+					pclick[i]=false;
+					var tmp = document.getElementById("p0"+i);
+					pclicknum=0;
+					tmp.style="box-shadow:none";
+				}
+			}
+			var volume = true;
+			function c_volume(){
+				volume = !volume;
+				var tmp = document.getElementById("volume");
+				var music = document.getElementById("music");
+				if(volume){
+					tmp.src="images//volume.png";
+					music.play();
+				}
+				else{
+					tmp.src="images//no volume.png";
+					music.pause();
+				}
+			}
+			function submit(){
+				var people = document.getElementById("maxpeople").value;
+				var money = document.getElementById("money").value;
+				var time = document.getElementById("time").value;
+				var win = document.getElementById("win").value;
+				var str= "play/index.html?"+people+"&";
+				var total = 0;
+				for(var i=1;i<=6;i++)if(pclick[i]==true)total++;
+				str += total+"&";
+				for(var i=1;i<=6;i++)
+				{
+					if(pclick[i]==true)str+=i+"&";
+				}
+				str+=money+"&"+time+"&"+win;
+				location.href = str;
+			}
+		</script>
+	</head>
+	<body onDRAGSTART="window.event.returnValue=false"	onCONTEXTMENU="window.event.returnValue=true"	onSelectStart="event.returnValue=false">
+		<div id="wrapper">
+			<div id="main">
+				<h1>Millionaire<img onclick = "c_volume();" id = "volume" src="images//volume.png" style="width:20px;height:20px;"></h1>
+				<audio id ="music" src="background.mp3" autoplay="autoplay" loop="loop">
+				</audio>
+				<div style="float:left;">
+				<tr>
+					<td><button onclick = "p_click('01');" id = "p01" class = "p_but"type="button" style = "box-shadow:none"><img class = "people" src="images//people//01.png" title="孫小美"></button></td>
+					<td><button onclick = "p_click('02');" id = "p02" class = "p_but"type="button" style = "box-shadow:none"><img class = "people" src="images//people//02.png" title="沙隆巴斯"></button></td>
+					<td><button onclick = "p_click('03');" id = "p03" class = "p_but"type="button" style = "box-shadow:none"><img class = "people" src="images//people//03.png" title="忍太郎"></button></td>
+				</tr>
+				<br>
+				<tr>
+					<td><button onclick = "p_click('04');" id = "p04" class = "p_but"type="button" style = "box-shadow:none"><img class = "people" src="images//people//04.png" title="金貝貝"></button></td>
+					<td><button onclick = "p_click('05');" id = "p05" class = "p_but"type="button" style = "box-shadow:none"><img class = "people" src="images//people//05.png" title="阿土仔"></button></td>
+					<td><button onclick = "p_click('06');" id = "p06" class = "p_but"type="button" style = "box-shadow:none"><img class = "people" src="images//people//06.png" title="莎拉公主"></button></td>
+				</tr>
+				</div>
+				<div>
+					<table>
+						<tr>
+							<td style = "padding: 0 0.75em;">
+								遊戲人數
+								<select onchange="clearpeople();" name="maxpeople" id="maxpeople">
+									　
+									<option value="4">四人</option>
+									<option value="5">五人</option>
+									<option value="6">六人</option>
+								</select>
+							</td>
+							<td style = "padding: 0 0.75em;">
+								總資金
+								<select name="money" id="money">
+								  　<option value="300000">300,000</option>
+								  　<option value="200000">200,000</option>
+									<option value="100000">100,000</option>
+								  　<option value="50000">50,000</option>
+									<option value="30000">30,000</option>
+									<option value="10000">10,000</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td style = "padding: 0.75em 0.75em 0 0.75em;">
+								遊戲時間
+								<select name="time" id="time">
+									<option value="none">無限</option>
+									<option value="24">兩年</option>
+									<option value="12">一年</option>
+									<option value="6">六個月</option>
+									<option value="3">三個月</option>
+								</select>
+							</td>
+							<td style = "padding: 0.75em 0.75em 0 0.75em;">
+								勝利條件
+								<select name="win" id="win">
+								  　<option value="none">無限</option>
+								  　<option value="20000000">20,000,000</option>
+									<option value="10000000">10,000,000</option>
+								  　<option value="2000000">2,000,000</option>
+									<option value="1000000">1,000,000</option>
+									<option value="600000">600,000</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<span onclick = "submit();"><input type="button" style = "width: 150px;height: 70px; font-size: 40px;" value ="Play"></span>
+			</div>
+			
+			<!-- BG -->
+			<div id="bg"></div>
+		</div>
+	</body>
+</html>
+
+
